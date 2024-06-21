@@ -32,14 +32,23 @@ btnSignup.addEventListener("click", function () {
 // Registro de usuário
 document.querySelector('#register-form').addEventListener('submit', function(event) {
     event.preventDefault();
+    const name = event.target.name.value;
     const email = event.target.email.value;
     const password = event.target.password.value;
 
     auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            // Usuário registrado com sucesso
-            console.log('Usuário registrado:', userCredential.user);
-            alert('Registro bem-sucedido!');
+            // Atualiza o perfil do usuário com o nome
+            return userCredential.user.updateProfile({
+                displayName: name
+            });
+        })
+        .then(() => {
+            // Usuário registrado e perfil atualizado com sucesso
+            const user = auth.currentUser;
+            console.log('Usuário registrado:', user);
+            //document.getElementById('welcome-message').textContent = 'Bem-vindo, ' + user.displayName;
+            alert('Registro bem-sucedido! Bem-vindo, ' + user.displayName);
         })
         .catch((error) => {
             console.error('Erro no registro:', error);
@@ -56,11 +65,15 @@ document.querySelector('#login-form').addEventListener('submit', function(event)
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             // Usuário logado com sucesso
-            console.log('Usuário logado:', userCredential.user);
-            alert('Login bem-sucedido!');
+            const user = userCredential.user;
+            console.log('Usuário logado:', user);
+            //document.getElementById('welcome-message').textContent = 'Bem-vindo, ' + user.displayName;
+            alert('Login bem-sucedido! Bem-vindo, ' + user.displayName);
         })
         .catch((error) => {
             console.error('Erro no login:', error);
             alert('Erro no login: ' + error.message);
         });
 });
+
+
