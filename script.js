@@ -47,8 +47,14 @@ document.querySelector('#register-form').addEventListener('submit', function(eve
             // Usuário registrado e perfil atualizado com sucesso
             const user = auth.currentUser;
             console.log('Usuário registrado:', user);
-            //document.getElementById('welcome-message').textContent = 'Bem-vindo, ' + user.displayName;
             alert('Registro bem-sucedido! Bem-vindo, ' + user.displayName);
+
+            // Armazena as informações do usuário no localStorage
+            localStorage.setItem('userName', user.displayName);
+            localStorage.setItem('userEmail', user.email);
+
+            // Redireciona para a segunda página
+            window.location.href = '/gestion_folder/gestion.html';
         })
         .catch((error) => {
             console.error('Erro no registro:', error);
@@ -67,13 +73,20 @@ document.querySelector('#login-form').addEventListener('submit', function(event)
             // Usuário logado com sucesso
             const user = userCredential.user;
             console.log('Usuário logado:', user);
-            //document.getElementById('welcome-message').textContent = 'Bem-vindo, ' + user.displayName;
             alert('Login bem-sucedido! Bem-vindo, ' + user.displayName);
+
+            // Armazena as informações do usuário no localStorage
+            localStorage.setItem('userName', user.displayName);
+            localStorage.setItem('userEmail', user.email);
+
+            // Redireciona para a segunda página
+            window.location.href = '/gestion_folder/gestion.html';
         })
         .catch((error) => {
             console.error('Erro no login:', error);
             alert('Erro no login: ' + error.message);
         });
 });
+
 
 
