@@ -40,3 +40,50 @@ function myFunction() {
       }
     }
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    gapi.load('client:auth2', initClient);
+});
+
+function initClient() {
+    gapi.client.init({
+        apiKey: 'AIzaSyA_mIWyn5hyAs3R1BlKWVjlGnNgcojBPf8', // Substitua pela sua chave de API
+        clientId: '1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com', // Substitua pelo seu ID do Cliente OAuth
+        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+        scope: "https://www.googleapis.com/auth/spreadsheets",
+    }).then(function () {
+        gapi.auth2.getAuthInstance().signIn().then(fetchSpreadsheetData);
+    });
+}
+
+function fetchSpreadsheetData() {
+    gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: '1CcX9EXoBTa3dBP4m0bGFommQ3UmNxCw48wbW0lJbEvo', // Substitua pelo ID da sua planilha
+        range: 'EA!B7:K46', // Substitua pelo intervalo de dados que deseja obter
+    }).then(function(response) {
+        var range = response.result;
+        if (range.values.length > 0) {
+            appendDataToHtml(range.values);
+        } else {
+            console.log('No data found.');
+        }
+    }, function(response) {
+        console.error('Error: ' + response.result.error.message);
+    });
+}
+
+function appendDataToHtml(data) {
+    var container = document.querySelector('.containers');
+    var table = document.createElement('table');
+    table.classList.add('table', 'table-striped');
+    data.forEach(function(row) {
+        var tr = document.createElement('tr');
+        row.forEach(function(cell) {
+            var td = document.createElement('td');
+            td.appendChild(document.createTextNode(cell));
+            tr.appendChild(td);
+        });
+        table.appendChild(tr);
+    });
+    container.appendChild(table);
+}

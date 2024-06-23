@@ -88,5 +88,38 @@ document.querySelector('#login-form').addEventListener('submit', function(event)
         });
 });
 
+  // Função para login com Google
+  function googleLogin() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+      .then(function(result) {
+        const user = result.user;
+        console.log('Usuário logado:', user);
+        alert('Login bem-sucedido! Bem-vindo, ' + (user.displayName || 'Usuário'));
+
+        // Armazena as informações do usuário no localStorage
+        localStorage.setItem('userName', user.displayName || 'Usuário');
+        localStorage.setItem('userEmail', user.email);
+
+        // Redireciona para a segunda página
+        window.location.href = '/gestion_folder/gestion.html';
+      })
+      .catch(function(error) {
+        console.error('Erro no login:', error);
+        alert('Erro no login: ' + error.message);
+      });
+  }
+
+  // Adiciona o manipulador de eventos ao ícone do Google
+  document.getElementById('google-login').addEventListener('click', function(event) {
+    event.preventDefault();
+    googleLogin();
+  });
+
+  document.getElementById('google-register').addEventListener('click', function(event) {
+    event.preventDefault();
+    googleLogin();
+  });
+
 
 
