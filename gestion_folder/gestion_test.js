@@ -1,29 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Google Sheets to Editable HTML Table with OAuth</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        td[contenteditable="true"] {
-            background-color: #f9f9f9;
-        }
-    </style>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script>
-        const CLIENT_ID = '1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com';
-        const API_KEY = 'AIzaSyA_mIWyn5hyAs3R1BlKWVjlGnNgcojBPf8';
-        const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
-        const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+const CLIENT_ID = '1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com';
+const API_KEY = 'AIzaSyA_mIWyn5hyAs3R1BlKWVjlGnNgcojBPf8';
+const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+const userEmail = localStorage.getItem('userEmail');
 
         let gapiInited = false;
         let gisInited = false;
@@ -43,29 +22,13 @@
             maybeEnableButtons();
         }
 
-        function gisLoaded() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: '', // defined later
-            });
-            gisInited = true;
-            maybeEnableButtons();
-        }
-
-        function maybeEnableButtons() {
-            if (gapiInited && gisInited) {
-                document.getElementById('authorize_button').style.display = 'block';
-            }
-        }
-
         function handleAuthClick() {
             tokenClient.callback = async (resp) => {
                 if (resp.error !== undefined) {
                     throw (resp);
                 }
-                document.getElementById('authorize_button').style.display = 'none';
-                document.getElementById('signout_button').style.display = 'block';
+                //document.getElementById('authorize_button').style.display = 'none';
+                //document.getElementById('signout_button').style.display = 'block';
                 loadSheetData();
             };
 
@@ -79,27 +42,42 @@
             }
         }
 
-        function handleSignoutClick() {
-            const token = gapi.client.getToken();
-            if (token !== null) {
-                google.accounts.oauth2.revoke(token.access_token);
-                gapi.client.setToken('');
-                document.getElementById('authorize_button').style.display = 'block';
-                document.getElementById('signout_button').style.display = 'none';
-                document.getElementById('table-container').innerHTML = '';
+        function gisLoaded() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: '', // defined later
+            });
+            gisInited = true;
+            maybeEnableButtons();
+        }
+
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                localStorage.getItem('userEmail');
             }
         }
 
         async function loadSheetData() {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                alert('Você precisa estar logado para acessar esta página.');
+                window.location.href = "login.html"; // Redireciona para a página de login se não estiver autenticado
+                return;
+            }
+            
             const spreadsheetId = '1CcX9EXoBTa3dBP4m0bGFommQ3UmNxCw48wbW0lJbEvo';
             const range = 'EA!B6:O46';
-
+        
             try {
                 const response = await gapi.client.sheets.spreadsheets.values.get({
                     spreadsheetId: spreadsheetId,
                     range: range,
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
                 });
-
+        
                 const values = response.result.values;
                 if (values.length > 0) {
                     let table = '<table>';
@@ -159,21 +137,7 @@
         }
 
         window.onload = function () {
-            document.getElementById('authorize_button').style.display = 'none';
-            document.getElementById('signout_button').style.display = 'none';
             gapiLoaded();
             gisLoaded();
-            loadSheetData();
+            //loadSheetData();
         };
-    </script>
-</head>
-<body>
-    <h1>Google Sheets to Editable HTML Table with OAuth</h1>
-    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
-    <div id="table-container">Loading data...</div>
-    <button onclick="updateSheetData()">Save Changes</button>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-</body>
-</html>

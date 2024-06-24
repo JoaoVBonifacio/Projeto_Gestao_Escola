@@ -92,23 +92,27 @@ document.querySelector('#login-form').addEventListener('submit', function(event)
   function googleLogin() {
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider)
-      .then(function(result) {
-        const user = result.user;
-        console.log('Usuário logado:', user);
-        alert('Login bem-sucedido! Bem-vindo, ' + (user.displayName || 'Usuário'));
+        .then(function(result) {
+            const user = result.user;
+            console.log('Usuário logado:', user);
+            alert('Login bem-sucedido! Bem-vindo, ' + (user.displayName || 'Usuário'));
 
-        // Armazena as informações do usuário no localStorage
-        localStorage.setItem('userName', user.displayName || 'Usuário');
-        localStorage.setItem('userEmail', user.email);
+            // Armazena as informações do usuário no localStorage
+            localStorage.setItem('userName', user.displayName || 'Usuário');
+            localStorage.setItem('userEmail', user.email);
 
-        // Redireciona para a segunda página
-        window.location.href = '/gestion_folder/gestion.html';
-      })
-      .catch(function(error) {
-        console.error('Erro no login:', error);
-        alert('Erro no login: ' + error.message);
-      });
-  }
+            const token = result.credential.accessToken;
+            localStorage.setItem('accessToken', token);
+
+            // Redireciona para a segunda página
+            window.location.href = '/gestion_folder/gestion.html';
+        })
+        .catch(function(error) {
+            console.error('Erro no login:', error);
+            alert('Erro no login: ' + error.message);
+        });
+}
+
 
   // Adiciona o manipulador de eventos ao ícone do Google
   document.getElementById('google-login').addEventListener('click', function(event) {

@@ -87,3 +87,18 @@ body {
   .dropdown a:hover {background-color: #ddd;}
   
   .show {display: block;}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid black;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+td[contenteditable="true"] {
+    background-color: #f9f9f9;
+}
