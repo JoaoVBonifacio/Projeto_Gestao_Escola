@@ -26,10 +26,10 @@
           <p class="social-text">Or Sign in with social platforms</p>
           <div class="social-media">
             <div id="g_id_onload"
-                 data-client_id="1078026969554-77vn7s1tv4avm8lk3ugobeofbqg0dtk8.apps.googleusercontent.com"
-                 data-callback="handleCredentialResponse">
-            </div>
-            <div class="g_id_signin" data-type="standard"></div>
+            data-client_id="1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse">
+       </div>
+       <div class="g_id_signin" data-type="standard"></div>
           </div>
         </form>
         <form action="#" class="sign-up-form">
@@ -50,7 +50,7 @@
           <p class="social-text">Or Sign up with social platforms</p>
           <div class="social-media">
             <div id="g_id_onload"
-                 data-client_id="1078026969554-77vn7s1tv4avm8lk3ugobeofbqg0dtk8.apps.googleusercontent.com"
+                 data-client_id="1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com"
                  data-callback="handleCredentialResponse">
             </div>
             <div class="g_id_signin" data-type="standard"></div>
@@ -90,6 +90,7 @@
 
   <script>
     function handleCredentialResponse(response) {
+      console.log('Credential Response:', response);
       const data = { id_token: response.credential };
       fetch('/login', {
         method: 'POST',
@@ -101,6 +102,7 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
+          alert(`Login successful! Welcome, ${data.name}`);
           window.location.href = '/dashboard';
         } else {
           alert('Login failed');
