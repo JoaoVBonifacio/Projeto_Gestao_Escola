@@ -11,7 +11,7 @@ GOOGLE_CLIENT_ID = os.environ.get('1078026969554-77vn7s1tv4avm8lk3ugobeofbqg0dtk
 def index():
     return render_template('index.html')
 
-app.route('/', methods=['POST'])
+app.route('/login', methods=['POST'])
 def login():
     token = request.json.get('id_token')
     try:
