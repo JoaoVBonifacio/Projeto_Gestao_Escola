@@ -11,24 +11,5 @@ GOOGLE_CLIENT_ID = os.environ.get('1078026969554-77vn7s1tv4avm8lk3ugobeofbqg0dtk
 def index():
     return render_template('index.html')
 
-@app.route('/login', methods=['POST'])
-def login():
-    token = request.json.get('id_token')
-    try:
-        # Specify the CLIENT_ID of the app that accesses the backend
-        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), GOOGLE_CLIENT_ID)
-
-        # ID token is valid. Get the user's Google Account ID from the decoded token.
-        userid = idinfo['sub']
-        email = idinfo['email']
-        name = idinfo['name']
-        # You can store user information in session or database
-        # For example, session['user'] = {'userid': userid, 'email': email, 'name': name}
-        
-        return jsonify(success=True, email=email, name=name)
-    except ValueError:
-        # Invalid token
-        return jsonify(success=False), 401
-
 if __name__ == '__main__':
     app.run(debug=True)
