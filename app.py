@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-GOOGLE_CLIENT_ID = os.environ.get('1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com', '1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com')
+GOOGLE_CLIENT_ID = os.environ.get('1078026969554-2snnqosr4kkfu8e5hbdmp7f4keqacmj4.apps.googleusercontent.com')
 
 @app.route('/')
 def index():
